@@ -25,6 +25,9 @@ All of these variables can be superceeded by prepending `PGBACKUPS_` - that is
 if you wish to use a different bucket to the default you may be using elsewhere
 in the application you can set `PGBACKUPS_AWS_STORAGE_BUCKET_NAME`.
 
+- `PGBACKUPS_PREFIX` - Backups will be uploaded to a name in the bucket of the
+  form `PGBACKUPS_PREFIX-timestamp.dump`.
+
 Note that the location of the current backup will be taken from
 `PGBACKUPS_URL`.
 
