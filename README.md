@@ -38,4 +38,6 @@ Requires requests and boto.
 ## Caveats
 
 The database dump will be uploaded with the timestamp. If you wish to expire
-some backups, move them to glacier or anything else then that is up to you.
+some backups, move them to glacier or anything else then that is up to you. At
+present it doesn't stream, so if your dump is too big to fit in memory it will
+fail.

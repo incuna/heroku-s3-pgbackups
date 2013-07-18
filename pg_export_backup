@@ -1,0 +1,35 @@
+import datetime
+import os
+
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
+import requests
+
+
+def get_env():
+    env = {
+        'source': os.environ['PGBACKUPS_URL'],
+        'key': '%s-%s.dump' % (os.environ['PGBACKUPS_PREFIX'], datetime.datetime.now().strftime('%Y-%m-%d-%H:%M:%S')),
+        'access': os.environ.get('PGBACKUPS_AWS_ACCESS_KEY_ID', os.environ.get('AWS_ACCESS_KEY_ID')),
+        'secret': os.environ.get('PGBACKUPS_AWS_SECRET_ACCESS_KEY', os.environ.get('AWS_SECRET_ACCESS_KEY')),
+        'bucket': os.environ.get('PGBACKUPS_AWS_STORAGE_BUCKET_NAME', os.environ.get('AWS_STORAGE_BUCKET_NAME')),
+    }
+    return env
+
+
+def move_backup(env):
+    source_url = env['source']
+    conn = S3Connection(env['access'], env['secret'])
+    bucket = conn.get_bucket(env['bucket'])
+    key = Key(bucket, env['key'])
+    dump = requests.get(source_url)
+    key.set_contents_from_string(dump.content)
+
+
+def main():
+    env = get_env()
+    move_backup(env)
+
+
+if __name__ == '__main__':
+    main()
